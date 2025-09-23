@@ -110,6 +110,14 @@ To build image locally use:
 docker build -f ./Dockerfile -t nextcloud-appapi-dsp:latest ./
 ```
 
+<details>
+  <summary>Podman</summary>
+
+  ```bash
+  podman build --format=docker -f ./Dockerfile -t nextcloud-appapi-dsp:latest ./
+  ```
+</details>
+
 Deploy image(for `nextcloud-docker-dev`):
 
 ```shell
@@ -159,6 +167,21 @@ docker run -e NC_HAPROXY_PASSWORD="some_secure_password" \
   --name nextcloud-appapi-dsp -h nextcloud-appapi-dsp --net host \
   --privileged -d nextcloud-appapi-dsp:latest
 ```
+
+<details>
+  <summary>Podman rootless</summary>
+
+  You can use this when Nextcloud is installed in Docker(for example), and the DSP will run on the host network on Podman.
+
+  ```bash
+  podman run -e NC_HAPROXY_PASSWORD="some_secure_password" \
+  -e BIND_ADDRESS="172.17.0.1" \
+  -v /run/user/1000/podman/podman.sock:/var/run/docker.sock \
+  -v `pwd`/certs/cert.pem:/certs/cert.pem \
+  --name nextcloud-appapi-dsp -h nextcloud-appapi-dsp --net host \
+  --privileged -d nextcloud-appapi-dsp:latest
+  ```
+</details>
 
 After that create daemon in AppAPI from the Docker Socket Proxy template, with next parameters:
 1. Host: `host.docker.internal:2375`
